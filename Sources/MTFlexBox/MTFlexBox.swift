@@ -8,7 +8,7 @@
 
 import UIKit
 
-final class Spacer: UIView {
+public final class Spacer: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         backgroundColor = .clear
@@ -20,7 +20,7 @@ final class Spacer: UIView {
 }
 
 
-final class MTFlexBox: UIView {
+public final class MTFlexBox: UIView {
     
     var nodes: [Node] = []
     var axis: Axis = .horizontal
@@ -29,7 +29,7 @@ final class MTFlexBox: UIView {
     
     static var layoutQueue = DispatchQueue(label: "layout", qos: .userInteractive)
     
-    required init(@FlexBuilder builder: () -> [UIView]) {
+    public required init(@FlexBuilder builder: () -> [UIView]) {
         super.init(frame: .zero)
         let views = builder()
         
@@ -45,7 +45,7 @@ final class MTFlexBox: UIView {
     }
     
     
-    override func layoutSubviews() {
+    public override func layoutSubviews() {
         layout?.layoutRect = Rect(from: self.bounds, axis: self.axis)
         let subviews = self.subviews
         layout?.willLayout()
@@ -70,17 +70,17 @@ final class MTFlexBox: UIView {
     }
     
     
-    func axis(_ axis: Axis) -> MTFlexBox{
+    public func axis(_ axis: Axis) -> MTFlexBox{
         self.axis = axis
         return self
     }
     
-    func layout(_ layout: Layout) -> MTFlexBox {
+    public func layout(_ layout: Layout) -> MTFlexBox {
         self.layout = layout
         return self
     }
     
-    func padding(_ padding: UIEdgeInsets) -> MTFlexBox {
+    public func padding(_ padding: UIEdgeInsets) -> MTFlexBox {
         self.padding = padding
         return self
     }
@@ -88,21 +88,21 @@ final class MTFlexBox: UIView {
 }
 
 
-struct Node {
+public struct Node {
     var axisRect: Rect
     var flex: Int
 }
 
 
-protocol Layout {
+public protocol Layout {
     mutating func transform(_ node: UIView) -> Rect
     var layoutRect: Rect { get set }
     mutating func willLayout()
 }
 
-struct FlexLayout: Layout {
+public struct FlexLayout: Layout {
     
-    mutating func willLayout() {
+    mutating public func willLayout() {
         count = 0
     }
     
@@ -112,7 +112,7 @@ struct FlexLayout: Layout {
     
     var axisRect: Rect = .zero
     
-    var layoutRect: Rect {
+    public var layoutRect: Rect {
         
         get {
             axisRect
@@ -124,14 +124,18 @@ struct FlexLayout: Layout {
         }
     }
     
-    var flex: [Int]
+    public init(flex: [Int]) {
+        self.flex = flex
+    }
+    
+    public var flex: [Int]
     var unitStep: CGFloat = 0
     lazy var offset: CGFloat = spacing
     var spacing: CGFloat = 0
     var orthognalFlex: OrthognalFlex = .leading
     var count = 0
     
-    mutating func transform(_ node: UIView) -> Rect {
+    mutating public func transform(_ node: UIView) -> Rect {
         var rect: Rect = .zero
         
         rect.minorSize = axisRect.minorSize
@@ -155,18 +159,19 @@ struct FlexLayout: Layout {
     }
 }
 
-@_functionBuilder struct FlexBuilder {
-    static func buildBlock(_ views: UIView...) -> [UIView] {
+@_functionBuilder
+public struct FlexBuilder {
+    public static func buildBlock(_ views: UIView...) -> [UIView] {
         return views
     }
 }
 
 
-enum Axis: CaseIterable {
+public enum Axis: CaseIterable {
     case horizontal, vertical
 }
 
-struct Rect {
+public struct Rect {
     static var zero = Rect()
     var majorPos: CGFloat = 0
     var minorPos: CGFloat = 0
@@ -232,7 +237,7 @@ extension CGRect {
     }
 }
 
-protocol Configurable {
+public protocol Configurable {
     init()
 }
 
